@@ -13,6 +13,19 @@
         <label>Password: </label><input type='password' id='userpwd' value='' required>
         <input type='submit' value='Log in'>
     </form>
+
+    <div id='loggedin-section'>
+        <div style='float:right'>
+            User: <span id='signedinuser'></span>
+            <button onclick='logout()'>Log out</button>
+        </div>
+    </div>
+
+    <div id='search-section'>    
+        Bear Name: <input type='text' id='search-name'>        
+        <button onclick='getBearsByName()'>Search</button>
+    </div>
+
 </body>
 
 </html>
