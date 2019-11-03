@@ -110,6 +110,49 @@ router.route('/getbearbyname/:bear_name')
         });
     });	
 
+// POST Route: Create a new bear
+// accessed http://localhost:8080/api/createbear with POST method
+// createbear is the noun+verb
+router.route('/createbear')
+
+    // create a bear
+    .post(function(req, res) {
+		// initialize an error object
+		var error = {};
+		
+		// create an instance of Bear model
+		var bear = new Bear();
+		
+		// bear info is POSTed in the request body
+		// corresponding properties assigned to bear
+        bear.name = req.body.name;
+		bear.type = req.body.type;
+		bear.period = req.body.period;
+        bear.quantity = req.body.quantity
+        
+        //error = {code: 0, message: 'Bear created successfully'};
+		
+		// log a create message to the console
+		//console.log('Create bear ' + JSON.stringify(bear));
+		
+		// call the bear object to save that bear instance
+        bear.save(function(err, result) {
+			if(err) {
+				error = {code: -1, message: 'Fail to create a bear record'};
+			} else {
+				error = {code: 0, message: 'Bear is created successfully!'};
+			}
+			
+			// since this is a new bear, mongoDB will return an implicit _id property to the bear
+			// _id is kept in the front end page to identify the bear for update/delete methods
+
+			// prepare the response
+			var response = {error: error, bear: bear};
+			
+			res.json(response);
+        });
+
+    });
 
 // Register the router (with all routes) with our app
 // with a prefix api
