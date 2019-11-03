@@ -154,6 +154,56 @@ router.route('/createbear')
 
     });
 
+// PUT Route: Updating a bear
+// accessed http://localhost:8080/api/updatebear/:bear_id with PUT method
+// updatebear is the noun-verb
+router.route('/updatebear/:bear_id')
+	// update the bear with this id
+    .put(function(req, res) {
+		
+        var error = {};
+		
+		// log a update message to the console
+		//console.log('update bear');		
+	
+		// Use findById() to ensure the bear exists in the database for update
+		// since the same bear might have been deleted by other user
+        Bear.findById(req.params.bear_id, function(err, bear) {
+
+            if (err) {
+				error = {code: -1, message: err};
+
+				// if there is an error to locate the bear
+				// package response with error
+				res.json({error: error});
+				return;
+			}
+
+			// if bear exists, assign/update bear properties 
+			// update bear properties with those in the request body correspondingly
+			bear.name = req.body.name;
+			bear.type = req.body.type;
+			bear.period = req.body.period;
+			bear.quantity = req.body.quantity;	
+			
+			// log an update message to the console
+			//console.log('Update Bear: ' + JSON.stringify(bear));
+
+            // save the bear
+            bear.save(function(err) {
+                if (err) {
+					error = {code: -1, message: err};
+				}
+				else{
+					error = {code: 0, message: 'record updated successfully!'};
+				}
+
+				// return the response
+                res.json({ error: error });
+            });
+        });
+    });
+
 // Register the router (with all routes) with our app
 // with a prefix api
 app.use('/api', router);
