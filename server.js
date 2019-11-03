@@ -60,8 +60,33 @@ router.get('/',
 			function(req, res) {
     		res.json({ message: 'hooray! welcome to our api!'});   
 			}
-		);
+        );
+        
+// get all the bears (accessed at GET http://localhost:8080/api/getbears)
+router.route('/getbears')	
+	// get all the bears 
+	   .get(function(req, res) {
+		var error = {};
+		var bears = [];
+		
+		// log a get message to the console
+		console.log('Get bears');		
+		
+        Bear.find(function(err, bears) {
+			console.log('bear found');
+            if (err) {				
+				bears = [];
+				error = {code: -1, message: err};
+			}
+			else
+			{
+				error = {code: 0, message: 'Bear records are retrieved successfully!'};
+			}
 
+			// return the response
+            res.json({error: error, bears: bears});
+        });
+    });	
 
 // Register the router (with all routes) with our app
 // with a prefix api
