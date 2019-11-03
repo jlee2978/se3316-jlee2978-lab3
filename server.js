@@ -88,6 +88,29 @@ router.route('/getbears')
         });
     });	
 
+router.route('/getbearbyname/:bear_name')
+    // get the bear by name
+
+    .get(function(req, res) {
+        var error = {};
+
+        // assume exact case sensitive match
+        var searchName = {name: req.params.bear_name};
+
+        Bear.find(searchName, function(err, bears) {
+            if (err) {
+                error = {code: -1, message: err};
+            }
+            else {
+                error = {code: 0, message: '1 record retrieved'};
+            }
+
+            // package response with error
+            res.json({error: error, bears: bears});
+        });
+    });	
+
+
 // Register the router (with all routes) with our app
 // with a prefix api
 app.use('/api', router);
