@@ -19,25 +19,38 @@
             User: <span id='signedinuser'></span>
             <button onclick='logout()'>Log out</button>
         </div>
+
+        <div id='search-section'>
+            Bear Name: <input type='text' id='search-name'>
+            <button onclick='getBearsByName()'>Search</button>
+        </div>
+
+        <table id='bear-list' style='margin: auto; margin-bottom:10px'>
+            <thead>
+                <tr>
+                    <th id='heading1'></th>
+                    <th>Name</td>
+                    <th>Type</td>
+                    <th>Period</td>
+                    <th>Quantity</td>
+                </tr>
+            </thead>
+        </table>
+
+        <form id="createbear" accept-charset="UTF-8" onsubmit="event.preventDefault(); createBear();">
+            <fieldset>
+                <legend>Create a new bear:-</legend>
+                Name: <input type="text" id="name" name="name" required value="" class="bear">
+                Type: <select id="type" name="type" required class="bear">
+                    <option value="Book">Book</option>
+                    <option value="CD">CD</option>
+                </select>
+                Period: <input type="number" id="period" name="period" value="" class="bear">
+                Quantity: <input type="number" id="quantity" required name="quantity" class="bear">
+                <input type="submit" value="Create">
+            </fieldset>
+        </form>
     </div>
-
-    <div id='search-section'>
-        Bear Name: <input type='text' id='search-name'>
-        <button onclick='getBearsByName()'>Search</button>
-    </div>
-
-    <table id='bear-list' style='margin: auto; margin-bottom:10px'>
-        <thead>
-            <tr>
-                <th id='heading1'></th>
-                <th>Name</td>
-                <th>Type</td>
-                <th>Period</td>
-                <th>Quantity</td>
-            </tr>
-        </thead>
-    </table>
-
 </body>
 
 </html>
