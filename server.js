@@ -204,6 +204,46 @@ router.route('/updatebear/:bear_id')
         });
     });
 
+// DELETE Route: To delete a bear
+// accessed http://localhost:8080/api/deletebear/:bear_id with DELETE method
+// deletebear is the noun-verb
+router.route('/deletebear/:bear_id')
+	// delete the bear with their id
+    .delete(function(req, res) {
+        var error = {};
+		
+		// Use findById to ensure the bear exists
+		// as the bear we saw on the web page might have already 
+		// been deleted
+		Bear.findById(req.params.bear_id, function (err, bear) {
+
+			if (err) {
+				error = { code: -1, message: err };
+
+				// return error as response
+				res.json({ error: error });
+				return;
+			}
+
+			// log a delete message to the console ONLY AFTER the bear is found
+			//console.log('Delete Bear: ' + JSON.stringify(bear));
+
+			// call the remove function to delete the bear
+            Bear.remove({_id: req.params.bear_id}, 
+                function (err, bear) {
+				if (err) {
+					error = { code: -1, message: err };
+				}
+				else {
+					error = { code: 0, message: 'Record deleted successfully!' };
+				}
+
+				// return error response
+				res.json({ error: error });
+			});
+		});
+    });
+
 // Register the router (with all routes) with our app
 // with a prefix api
 app.use('/api', router);
