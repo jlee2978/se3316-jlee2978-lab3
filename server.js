@@ -3,12 +3,12 @@
 // server.js
 
 // In this code, the response is an object contains
-// {error: error, bear: bear} or
-// {error: error, bears: bears} 
+// {error: error, item: item} or
+// {error: error, items: items} 
 //
 // where error is an object {code: codeValue, message: errorMessage}
-//   and bear/bears is an optional object (for update, delete). 
-//   To get bears or after creating a new bear, it is a required object
+//   and item/items is an optional object (for update, delete). 
+//   To get items or after creating a new item, it is a required object
 // =============================================================================
 
 // include the required packages
@@ -17,7 +17,7 @@ var app        = express();                 // define our application
 var bodyParser = require('body-parser');
 
 // import the model defined in the models folder
-var Bear     = require('./bear');
+var Item     = require('./bear');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -65,42 +65,42 @@ router.get('/',
 			}
         );
         
-// get all the bears (accessed at GET http://localhost:8080/api/getbears)
-router.route('/getbears')	
-	// get all the bears 
+// get all the items (accessed at GET http://localhost:8080/api/getitems)
+router.route('/getitems')	
+	// get all the items 
 	   .get(function(req, res) {
 		var error = {};
-		var bears = [];
+		var items = [];
 		
 		// log a get message to the console
-		console.log('Get bears');		
+		console.log('Get items');		
 		
-        Bear.find(function(err, bears) {
-			console.log('bear found');
+        Item.find(function(err, items) {
+			console.log('item found');
             if (err) {				
-				bears = [];
+				items = [];
 				error = {code: -1, message: err};
 			}
 			else
 			{
-				error = {code: 0, message: 'Bear records are retrieved successfully!'};
+				error = {code: 0, message: 'Item records are retrieved successfully!'};
 			}
 
 			// return the response
-            res.json({error: error, bears: bears});
+            res.json({error: error, items: items});
         });
     });	
 
-router.route('/getbearsbyname/:bear_name')
-    // get the bear by name
+router.route('/getitemsbyname/:item_name')
+    // get the item by name
 
     .get(function(req, res) {
         var error = {};
 
         // assume exact case sensitive match
-        var searchName = {name: req.params.bear_name};
+        var searchName = {name: req.params.item_name};
 
-        Bear.find(searchName, function(err, bears) {
+        Item.find(searchName, function(err, items) {
             if (err) {
                 error = {code: -1, message: err};
             }
@@ -109,91 +109,88 @@ router.route('/getbearsbyname/:bear_name')
             }
 
             // package response with error
-            res.json({error: error, bears: bears});
+            res.json({error: error, items: items});
         });
     });	
 
-// POST Route: Create a new bear
-// accessed http://localhost:8080/api/createbear with POST method
-// createbear is the noun+verb
-router.route('/createbear')
+// POST Route: Create a new item
+// accessed http://localhost:8080/api/createitem with POST method
+// createitem is the noun+verb
+router.route('/createitem')
 
-    // create a bear
+    // create a item
     .post(function(req, res) {
 		// initialize an error object
 		var error = {};
 		
-		// create an instance of Bear model
-		var bear = new Bear();
+		// create an instance of Item model
+		var item = new Item();
 		
-		// bear info is POSTed in the request body
-		// corresponding properties assigned to bear
-        bear.name = req.body.name;
-		bear.type = req.body.type;
-		bear.period = req.body.period;
-        bear.quantity = req.body.quantity
+		// item info is POSTed in the request body
+		// corresponding properties assigned to item
+        item.name = req.body.name;
+		item.type = req.body.type;
+		item.period = req.body.period;
+        item.quantity = req.body.quantity
         
-        //error = {code: 0, message: 'Bear created successfully'};
+        //error = {code: 0, message: 'Item created successfully'};
 		
 		// log a create message to the console
-		//console.log('Create bear ' + JSON.stringify(bear));
+		//console.log('Create item ' + JSON.stringify(item));
 		
-		// call the bear object to save that bear instance
-        bear.save(function(err, result) {
+		// call the item object to save that item instance
+        item.save(function(err, result) {
 			if(err) {
-				error = {code: -1, message: 'Fail to create a bear record'};
+				error = {code: -1, message: 'Failed to create an item record'};
 			} else {
-				error = {code: 0, message: 'Bear is created successfully!'};
+				error = {code: 0, message: 'Item created successfully!'};
 			}
 			
-			// since this is a new bear, mongoDB will return an implicit _id property to the bear
-			// _id is kept in the front end page to identify the bear for update/delete methods
+			// since this is a new item, mongoDB will return an implicit _id property to the item
+			// _id is kept in the front end page to identify the item for update/delete methods
 
 			// prepare the response
-			var response = {error: error, bear: bear};
+			var response = {error: error, item: item};
 			
 			res.json(response);
         });
 
     });
 
-// PUT Route: Updating a bear
-// accessed http://localhost:8080/api/updatebear/:bear_id with PUT method
-// updatebear is the noun-verb
-router.route('/updatebear/:bear_id')
-	// update the bear with this id
+// PUT Route: Updating a item
+// accessed http://localhost:8080/api/updateitem/:item_id with PUT method
+// updateitem is the noun-verb
+router.route('/updateitem/:item_id')
+	// update the item with this id
     .put(function(req, res) {
 		
         var error = {};
-		
-		// log a update message to the console
-		//console.log('update bear');		
 	
-		// Use findById() to ensure the bear exists in the database for update
-		// since the same bear might have been deleted by other user
-        Bear.findById(req.params.bear_id, function(err, bear) {
+		// Use findById() to ensure the item exists in the database for update
+		// since the same item might have been deleted by other user
+        Item.findById(req.params.item_id, function(err, item) {
 
             if (err) {
 				error = {code: -1, message: err};
 
-				// if there is an error to locate the bear
+				// if there is an error to locate the item
 				// package response with error
 				res.json({error: error});
 				return;
 			}
 
-			// if bear exists, assign/update bear properties 
-			// update bear properties with those in the request body correspondingly
-			bear.name = req.body.name;
-			bear.type = req.body.type;
-			bear.period = req.body.period;
-			bear.quantity = req.body.quantity;	
+			// if item exists, assign/update item properties 
+			// update item properties with those in the request body correspondingly
+			item.name = req.body.name;
+			item.type = req.body.type;
+			item.period = req.body.period;
+			item.quantity = req.body.quantity;	
 			
 			// log an update message to the console
-			//console.log('Update Bear: ' + JSON.stringify(bear));
+			//console.log('Update Item: ' + JSON.stringify(item));
 
-            // save the bear
-            bear.save(function(err) {
+            // save the item
+            item.save(function(err) {
                 if (err) {
 					error = {code: -1, message: err};
 				}
@@ -207,18 +204,18 @@ router.route('/updatebear/:bear_id')
         });
     });
 
-// DELETE Route: To delete a bear
-// accessed http://localhost:8080/api/deletebear/:bear_id with DELETE method
-// deletebear is the noun-verb
-router.route('/deletebear/:bear_id')
-	// delete the bear with their id
+// DELETE Route: To delete a item
+// accessed http://localhost:8080/api/deleteitem/:item_id with DELETE method
+// deleteitem is the noun-verb
+router.route('/deleteitem/:item_id')
+	// delete the item with their id
     .delete(function(req, res) {
         var error = {};
 		
-		// Use findById to ensure the bear exists
-		// as the bear we saw on the web page might have already 
+		// Use findById to ensure the item exists
+		// as the item we saw on the web page might have already 
 		// been deleted
-		Bear.findById(req.params.bear_id, function (err, bear) {
+		Item.findById(req.params.item_id, function (err, item) {
 
 			if (err) {
 				error = { code: -1, message: err };
@@ -228,12 +225,9 @@ router.route('/deletebear/:bear_id')
 				return;
 			}
 
-			// log a delete message to the console ONLY AFTER the bear is found
-			//console.log('Delete Bear: ' + JSON.stringify(bear));
-
-			// call the remove function to delete the bear
-            Bear.remove({_id: req.params.bear_id}, 
-                function (err, bear) {
+			// call the remove function to delete the item
+            Item.remove({_id: req.params.item_id}, 
+                function (err, item) {
 				if (err) {
 					error = { code: -1, message: err };
 				}

@@ -2,13 +2,13 @@
 <html>
 
 <head>
-    <title>Bear</title>
+    <title>Item</title>
     <script src="script.js">
         </script>
 
         <style>
             #search-section {margin-bottom:30px;}
-            #createbear {margin-top:30px;}
+            #createitem {margin-top:30px;}
             table  {width:80%; 
                       border: 1px solid black;
                      margin:auto;
@@ -48,12 +48,12 @@
             <button onclick='logout()'>Log out</button>
         </div>
 
-        <div id='search-section'>
-            Bear Name: <input type='text' id='search-name'>
-            <button onclick='getBearsByName()'>Search</button>
-        </div>
+        <form id='search-section' onsubmit='event.preventDefault(); getItemsByName()'>
+            Item Name: <input type='text' id='search-name'>
+            <input type='submit' value='Search'>
+        </form>
 
-        <table id='bear-list' style='margin: auto; margin-bottom:10px'>
+        <table id='item-list' style='margin: auto; margin-bottom:10px'>
             <thead>
                 <tr>
                     <th id='heading1'></th>
@@ -65,16 +65,16 @@
             </thead>
         </table>
 
-        <form id="createbear" accept-charset="UTF-8" onsubmit="event.preventDefault(); createBear();">
+        <form id="createitem" accept-charset="UTF-8" onsubmit="event.preventDefault(); createItem();">
             <fieldset>
-                <legend>Create a new bear:-</legend>
-                Name: <input type="text" id="name" name="name" required value="" class="bear">
-                Type: <select id="type" name="type" required class="bear">
+                <legend>Create a new item:-</legend>
+                Name: <input type="text" id="name" name="name" required value="" class="item">
+                Type: <select id="type" name="type" required class="item">
                     <option value="Book">Book</option>
                     <option value="CD">CD</option>
                 </select>
-                Period: <input type="number" id="period" name="period" value="" class="bear">
-                Quantity: <input type="number" id="quantity" required name="quantity" class="bear">
+                Period: <input type="number" id="period" name="period" value="" class="item">
+                Quantity: <input type="number" id="quantity" required name="quantity" class="item">
                 <input type="submit" value="Create">
             </fieldset>
         </form>

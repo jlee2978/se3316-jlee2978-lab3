@@ -29,7 +29,7 @@ function submit(method, verb, jsonData, callBack) {
 	// 
 	// parameters:
 	// method represents the CRUD operation: get, put, post, or delete
-	// verb (e.g. getbears, updateBear) maps to the corresponding method
+	// verb (e.g. getitems, updateItem) maps to the corresponding method
 	// jsonData is the data (json format used in this lab) in the request body passed to the server for processing
 	// callBack is a function which performs operations upon receiving response from server
 	
@@ -64,9 +64,9 @@ function submit(method, verb, jsonData, callBack) {
 	xmlHttp.send(jsonData);	
 }
 
-function getBears()
+function getItems()
 {	
-	var verb = 'getbears';
+	var verb = 'getitems';
 	
 	// Define callBack function
 	var callBack = function(response) {
@@ -77,23 +77,13 @@ function getBears()
 			return;
 		}
 
-		// get the retreived bears from server response
-		var bears = response.bears;
-
-		resetTable();
-		
-		// convert bears into an array so that we have the same logic to add array element to the table row
-		if (!Array.isArray(bears))
-		{
-			var bearsArray = [];
-			bearsArray.push(bears);
-			bears = bearsArray;
-		}
-				
-		// process each bear
-		bears.forEach(function(bear, index) {
-			// add a table row for bear
-			addRow(bear);			
+        // reset table
+        resetTable();
+        
+		// process each item in the response.items
+		response.items.forEach(function(item, index) {
+			// add a table row for item
+			addRow(item);			
 		})
 	}
 	
@@ -101,20 +91,20 @@ function getBears()
 	submit('GET', verb, null, callBack)
 }
 
-function getBearsByName()
+function getItemsByName()
 {
-	// Get the name for searching bear
+	// Get the name for searching item
 	var name = getElement('search-name').value;
 
-	// if name is not provided for searching then ignore it and simply call getBears() to return all bears in the database
+	// if name is not provided for searching then ignore it and simply call getItems() to return all items in the database
 	if (name.length == 0)
 	{
-		getBears();
+		getItems();
 		return;
 	}
 	
 	// if name is provided, prepare the verb
-	var verb = 'getbearsbyname/' + name;
+	var verb = 'getitemsbyname/' + name;
 	
 	// define callBack function
 	var callBack = function(response) {
@@ -124,25 +114,15 @@ function getBearsByName()
 			alert('Error: ' + response.error.message);
 			return;
 		}
-
-		// get the bears from server response
-        var bears = response.bears;
-        
+       
         //reset the table
 		resetTable();
-		
-		// convert bears into an array so that we have the same logic to add array element to the table row
-		if (!Array.isArray(bears))
-		{
-			var bearsArray = [];
-			bearsArray.push(bears);
-			bears = bearsArray;
-		}
-				
-		bears.forEach(function(bear, index) {
+                
+        // process each item in the response.items
+		response.items.forEach(function(item, index) {
 
-			// add a table row for bear
-			addRow(bear);
+			// add a table row for item
+			addRow(item);
 			
 		})
 	}
@@ -151,16 +131,16 @@ function getBearsByName()
 	submit('GET', verb, null, callBack)
 }
 
-function createBear()
+function createItem()
 {	
 	// define a callBack function
 	var callBack = function(response) {
 
 		if (response.error.code == 0) {
-			addRow(response.bear);
+			addRow(response.item);
             
             //reset the form
-			getElement('createbear').reset();
+			getElement('createitem').reset();
 		}
 		else {
 			alert('Error: ' + response.error.message);
@@ -168,11 +148,11 @@ function createBear()
 	}
 
 	// prepare general querySelector
-	var selector = '#createbear input[id="';
+	var selector = '#createitem input[id="';
 
 	// get the data from the form
 	var name = document.querySelector(selector + 'name"]').value;
-	var type = document.querySelector('#createbear select[id="type"]').value;;
+	var type = document.querySelector('#createitem select[id="type"]').value;;
 	var period = document.querySelector(selector + 'period"]').value;
 	var quantity = document.querySelector(selector + 'quantity"]').value;;
 		
@@ -187,12 +167,12 @@ function createBear()
 	
 	// call the submit function to send request
 	// Post is the C operation for Create data
-	submit('POST', 'createbear', formJSONData, callBack);
+	submit('POST', 'createitem', formJSONData, callBack);
 }
 
-function updateBear(id) {
+function updateItem(id) {
 	// Get selector for the row according to id
-	var selector = '#bear-list tr[id="' + id + '"]';
+	var selector = '#item-list tr[id="' + id + '"]';
 
 	// get the data from the row
 	var name = document.querySelector(selector + ' input[name="name"]').value;
@@ -223,10 +203,10 @@ function updateBear(id) {
 	
 	// call the submit function to send request
 	// PUT is the U operation for Update data
-	submit('PUT', 'updatebear/' + id.toString(), formJSONData, callBack);	
+	submit('PUT', 'updateitem/' + id.toString(), formJSONData, callBack);	
 }
 
-function deleteBear(id) {
+function deleteItem(id) {
 	// Define a callBack function
 	callBack = function(response) {
 		if (response.error.code !== 0) {
@@ -241,8 +221,8 @@ function deleteBear(id) {
 
 		// call the submit function to send request
 		// DELETE is the D operation for deleting data
-		// id is all we need to pass and is used to identify the bear record for delete so we don't need to pass any form data and pass null
-		submit('DELETE', 'deletebear/' + id.toString(), null, callBack);
+		// id is all we need to pass and is used to identify the item record for delete so we don't need to pass any form data and pass null
+		submit('DELETE', 'deleteitem/' + id.toString(), null, callBack);
 	}
 }
 
@@ -322,15 +302,15 @@ function login() {
 		loginSection.style.display = 'block';
 		
 		if (role == 'admin') {
-			getElement('createbear').style.display = 'block';
+			getElement('createitem').style.display = 'block';
 		}
 		else {
-			getElement('createbear').style.display = 'none';
+			getElement('createitem').style.display = 'none';
 		}
 			
 		getElement('signedinuser').innerHTML = userid;
 		
-		getBears();
+		getItems();
 
 		polling = setInterval(
 
@@ -341,10 +321,10 @@ function login() {
 				}
 				
 				if (getElement('search-name').value.length == 0) {
-					getBears();
+					getItems();
 				}
 				else {
-					getBearsByName();
+					getItemsByName();
 				}
 			},
 			pollingSec);
@@ -355,7 +335,7 @@ function logout() {
 	clearInterval(polling);
 	
 	getElement('signinform').reset();
-	getElement('createbear').reset();
+	getElement('createitem').reset();
 	
 	getElement('signinform').style.display = 'block';
 	getElement('loggedin-section').style.display = 'none';
@@ -364,15 +344,15 @@ function logout() {
 	
 }
 
-// add new row for bear to the table
-function addRow(bear) {
+// add new row for item to the table
+function addRow(item) {
 	// This function accepts an individual object and adds it to the table row for display
-	var table = getElement('bear-list');
+	var table = getElement('item-list');
 
 	// Get the # of table rows except header row
 	var len = table.rows.length - 1;
 
-	// add a table row to show bear information
+	// add a table row to show item information
 	var row = table.insertRow(++len);
 
 	// start with a row cell at 0 (zero-based)
@@ -381,23 +361,23 @@ function addRow(bear) {
 	// create a new cell
 	var cell = row.insertCell(i++);
 
-	// assign the row id from bear _id
-	row.id = bear._id;
+	// assign the row id from item _id
+	row.id = item._id;
 	
 	if (role == 'admin') {
 		// create Edit button						
-		cell.innerHTML = '<button onclick="updateBear(' + "'" + bear._id + "'" + ')">Update</button>';
+		cell.innerHTML = '<button onclick="updateItem(' + "'" + item._id + "'" + ')">Update</button>';
 
 		// create Delete button	within the same cell
-		cell.innerHTML += '<button onclick="deleteBear(' + "'" + bear._id + "'" + ')" style="margin-left:5%; float: right;">Delete</button>';
+		cell.innerHTML += '<button onclick="deleteItem(' + "'" + item._id + "'" + ')" style="margin-left:5%; float: right;">Delete</button>';
 	}
 	else {
         // the role is user
 		cell.innerHTML = "<input type='text' value='" + row.id + "' disabled>"
 	}
 
-	// create cell for each property in bear
-	for (var property in bear) {
+	// create cell for each property in item
+	for (var property in item) {
 		var inputType;
 		var disabled = role == 'user'? 'disabled' : '';
 		var selected;
@@ -426,7 +406,7 @@ function addRow(bear) {
 
 			// generate a select tag for type
 			selectHtml = '<select name="' + property + '"' + disabled + '>';
-			if (bear[property].toUpperCase() == 'BOOK') {
+			if (item[property].toUpperCase() == 'BOOK') {
 				selectHtml += '<option selected value="Book">Book</option><option value="CD">CD</option>';
 			}
 			else {
@@ -438,7 +418,7 @@ function addRow(bear) {
 		}
 		else {
 			// generate a INPUT tag for other properties
-            cell.innerHTML = '<input type="' + inputType + '" ' + required + ' ' + disabled + ' name = "' + property + '" value = "' + bear[property] + '">';
+            cell.innerHTML = '<input type="' + inputType + '" ' + required + ' ' + disabled + ' name = "' + property + '" value = "' + item[property] + '">';
         }
         //increase index for cell
 		++i;
@@ -447,8 +427,8 @@ function addRow(bear) {
 
 // reset the table rows
 function resetTable() {
-    // get table element for displaying bears
-    var table  = getElement('bear-list');
+    // get table element for displaying items
+    var table  = getElement('item-list');
             
     // get the # of existing rows in the table except the column header row
     var len = table.rows.length - 1;
