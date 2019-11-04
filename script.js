@@ -8,6 +8,9 @@ var role =''
 // create an ASYNCHRONOUS HTTP request global object
 var xmlHttp = new XMLHttpRequest();
 
+// polling every 2 sec
+var pollingSec = 2000;
+
 var polling;
 
 
@@ -147,6 +150,45 @@ function getBearsByName()
 	submit('POST', verb, JSON.stringify({"sensitivity" : caseSensitivity}), callBack)
 }
 
+function createBear()
+{	
+	// define a callBack function
+	var callBack = function(response) {
+
+		if (response.error.code == 0) {
+			addRow(response.bear);
+            
+            //reset the form
+			getElement('createbear').reset();
+		}
+		else {
+			alert('Error: ' + response.error.message);
+		}	
+	}
+
+	// prepare general querySelector
+	var selector = '#createbear input[id="';
+
+	// get the data from the form
+	var name = document.querySelector(selector + 'name"]').value;
+	var type = document.querySelector('#createbear select[id="type"]').value;;
+	var period = document.querySelector(selector + 'period"]').value;
+	var quantity = document.querySelector(selector + 'quantity"]').value;;
+		
+	// validate data
+	if (!isDataValid(name, type, period, quantity)) {
+        return;
+    }
+	
+	// we sanitize the name as it is the only text input
+	name = sanitize(name);
+	var formJSONData = JSON.stringify({name: name, type: type, period: period, quantity: quantity});
+	
+	// call the submit function to send request
+	// Post is the C operation for Create data
+	submit('POST', 'createbear', formJSONData, callBack);
+}
+
 function deleteBear(id) {
 	// Define a callBack function
 	callBack = function(response) {
@@ -165,6 +207,42 @@ function deleteBear(id) {
 		// id is all we need to pass and is used to identify the bear record for delete so we don't need to pass any form data and pass null
 		submit('DELETE', 'deletebear/' + id.toString(), null, callBack);
 	}
+}
+
+function isDataValid(name, type, period, quantity) {
+	// validate data
+	if (name.length == 0)
+	{
+		alert('Error: name is mandatory');
+		return false;
+	}
+		
+	if (type.toUpperCase() !== 'CD' && type.toUpperCase() !== 'BOOK')
+	{
+		alert('Error: type should be either Book or CD!');
+		return false;
+	}
+	
+	// if peiod is not a number or less than zero, raise error
+	if (period) {
+		if (isNaN(period) || period <= 0) {
+			alert('Error: period should be a positive number');
+			return false;
+		}
+	}
+
+	// if quantity is not a number, no input, or less than zero, raise error
+	if (isNaN(quantity) || quantity.length == 0 || quantity <= 0) {
+		alert('Error: quantity should be a positive number');
+		return false;
+	}
+
+	return true;
+}
+
+// Sanitize data
+function sanitize(data) {
+    return data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 
