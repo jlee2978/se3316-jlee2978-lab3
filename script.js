@@ -13,6 +13,12 @@ var pollingSec = 2000;
 
 var polling;
 
+// wait 200ms to get userid element ready, then set the cursor to focus on it
+setTimeout(
+	function() {
+		getElement('userid').focus();
+	}, 200);
+
 
 
 // Functions for CRUD operations
