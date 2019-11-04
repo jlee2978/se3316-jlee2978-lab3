@@ -27,6 +27,9 @@ app.use(bodyParser.json());
 // include the mongoose object
 var mongoose   = require('mongoose');
 
+// get rid of the deprecation warning in the command prompt
+mongoose.set('useUnifiedTopology', true);
+
 // connect to the mongoDB "bears"
 // which is set up according to the lab pdf
 // mongoose.connect("mongodb+srv://wingli:r3e2g1$00@cluster0-n48kg.mongodb.net/test?retryWrites=true&w=majority", 
@@ -88,7 +91,7 @@ router.route('/getbears')
         });
     });	
 
-router.route('/getbearbyname/:bear_name')
+router.route('/getbearsbyname/:bear_name')
     // get the bear by name
 
     .get(function(req, res) {

@@ -9,7 +9,7 @@ var BearSchema   = new Schema({
     period: Number,
     quantity: Number
 },
-{versionKey: false}
+{versionKey: false}     //disables '__v' version property
 );
 
 module.exports = mongoose.model('Bear', BearSchema);

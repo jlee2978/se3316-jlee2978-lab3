@@ -126,8 +126,8 @@ function getBearsByName()
 		}
 
 		// get the bears from server response
-		var bears = response.bears;
-
+        var bears = response.bears;
+        
         //reset the table
 		resetTable();
 		
@@ -148,7 +148,7 @@ function getBearsByName()
 	}
 	
 	// call the submit function to send request
-	submit('POST', verb, null, callBack)
+	submit('GET', verb, null, callBack)
 }
 
 function createBear()
@@ -318,7 +318,7 @@ function login() {
 		
 		resetTable();
 		
-		getElement('sign-in').style.display = 'none';
+		getElement('signinform').style.display = 'none';
 		loginSection.style.display = 'block';
 		
 		if (role == 'admin') {
@@ -357,7 +357,7 @@ function logout() {
 	getElement('signinform').reset();
 	getElement('createbear').reset();
 	
-	getElement('sign-in').style.display = 'block';
+	getElement('signinform').style.display = 'block';
 	getElement('loggedin-section').style.display = 'none';
 	
 	getElement('userid').focus();
