@@ -20,7 +20,7 @@ function submit(method, verb, jsonData, callBack) {
 	// 
 	// parameters:
 	// method represents the CRUD operation: get, put, post, or delete
-	// verb (e.g. getbears, savebear) maps to the corresponding method
+	// verb (e.g. getbears, updateBear) maps to the corresponding method
 	// jsonData is the data (json format used in this lab) in the request body passed to the server for processing
 	// callBack is a function which performs operations upon receiving response from server
 	
@@ -147,6 +147,25 @@ function getBearsByName()
 	submit('POST', verb, JSON.stringify({"sensitivity" : caseSensitivity}), callBack)
 }
 
+function deleteBear(id) {
+	// Define a callBack function
+	callBack = function(response) {
+		if (response.error.code !== 0) {
+            alert(response.error.message);
+            return;
+		}
+		getElement(id).remove();
+	}
+	
+	// confirm before delete
+	if (window.confirm('Are you sure you want to delete this record?')) {
+
+		// call the submit function to send request
+		// DELETE is the D operation for deleting data
+		// id is all we need to pass and is used to identify the bear record for delete so we don't need to pass any form data and pass null
+		submit('DELETE', 'deletebear/' + id.toString(), null, callBack);
+	}
+}
 
 
 
